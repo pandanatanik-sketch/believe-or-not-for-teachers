@@ -106,13 +106,8 @@
       min-height: 20px;
     }
 
-    .feedback.correct {
-      color: #15803d;
-    }
-
-    .feedback.incorrect {
-      color: #b91c1c;
-    }
+    .feedback.correct { color: #15803d; }
+    .feedback.incorrect { color: #b91c1c; }
 
     .progress {
       font-size: 13px;
@@ -159,30 +154,23 @@
       box-shadow: 0 8px 18px rgba(75, 107, 251, 0.22);
       transform: translateY(-1px);
     }
-
-    .channel-btn:active {
-      transform: translateY(0);
-      box-shadow: none;
-    }
   </style>
 </head>
 
 <body>
   <div class="card" id="card">
-    <div class="title">Тест «Верю / Не верю»</div>
+    <div class="title" id="testTitle">Тест «Верю / Не верю»</div>
 
-    <!-- ✅ стартовый экран -->
+    <!-- стартовый экран -->
     <div id="previewBlock">
       <button class="start-btn" id="startBtn">▶️ Начать тест</button>
 
-      <!-- ✅ кнопка канала в начале -->
       <div class="footer">
-        
-        <a class="channel-btn" href="https://t.me/tutor_Natalya" target="_blank"> ✨Мой канал</a>
+        <a class="channel-btn" href="https://t.me/tutor_Natalya" target="_blank">✨ Мой канал</a>
       </div>
     </div>
 
-    <!-- ✅ тест -->
+    <!-- тест -->
     <div id="testBlock" style="display:none;">
       <div id="category" class="category"></div>
       <div id="question" class="question"></div>
@@ -197,7 +185,7 @@
 
       <div id="feedback" class="feedback"></div>
 
-      <!-- ✅ картинка пояснения (показывается только при ошибке) -->
+      <!-- картинка пояснения (показывается только при ошибке) -->
       <img id="explanationImage" class="question-image" src="" alt="Картинка-пояснение" style="display:none;" />
 
       <div class="progress" id="progress"></div>
@@ -205,7 +193,9 @@
   </div>
 
   <script>
-    const STORAGE_KEY = "believe_or_not_questions_local_v2";
+    // ✅ теперь тест читает вопросы из bon_test_<id>
+    const TEST_PREFIX = "bon_test_";
+    const TESTS_LIST_KEY = "bon_tests_library_v1";
 
     let questions = [];
     let index = 0;
@@ -214,6 +204,7 @@
 
     const previewBlockEl = document.getElementById("previewBlock");
     const startBtn = document.getElementById("startBtn");
+    const testTitleEl = document.getElementById("testTitle");
 
     const testBlockEl = document.getElementById("testBlock");
     const categoryEl = document.getElementById("category");
@@ -229,30 +220,62 @@
     const btnNext = document.getElementById("btnNext");
     const cardEl = document.getElementById("card");
 
-    function loadQuestions() {
+    function getTestId() {
+      const params = new URLSearchParams(window.location.search);
+      return params.get("id");
+    }
+
+    function loadQuestionsByTestId(testId) {
       try {
-        const data = localStorage.getItem(STORAGE_KEY);
+        const data = localStorage.getItem(TEST_PREFIX + testId);
         if (!data) return [];
         return JSON.parse(data);
       } catch (e) {
-        console.warn("Ошибка чтения вопросов", e);
         return [];
       }
     }
 
+    function getTestTitle(testId) {
+      try {
+        const data = localStorage.getItem(TESTS_LIST_KEY);
+        if (!data) return null;
+        const list = JSON.parse(data);
+        const meta = list.find(t => t.id === testId);
+        return meta ? meta.title : null;
+      } catch {
+        return null;
+      }
+    }
+
     function init() {
-      questions = loadQuestions();
+      const testId = getTestId();
+
+      if (!testId) {
+        cardEl.innerHTML = `
+          <div class="title">Тест не выбран</div>
+          <div style="font-size: 13px; color: #6b7280; margin-top: 6px;">
+            Открой тест через конструктор (index.html).
+          </div>
+          <div class="footer" style="margin-top:16px;">
+            <a class="channel-btn" href="https://t.me/tutor_Natalya" target="_blank">✨ Мой канал</a>
+          </div>
+        `;
+        return;
+      }
+
+      const title = getTestTitle(testId);
+      if (title) testTitleEl.textContent = `Тест «${title}»`;
+
+      questions = loadQuestionsByTestId(testId);
 
       if (!questions || questions.length === 0) {
         cardEl.innerHTML = `
           <div class="title">Вопросы не найдены</div>
           <div style="font-size: 13px; color: #6b7280; margin-top: 6px;">
-            Открой <b>index.html</b>, добавь вопросы — и затем снова зайди сюда.
+            В этом тесте пока нет вопросов. Добавь их в конструкторе.
           </div>
-
           <div class="footer" style="margin-top:16px;">
-            
-            <a class="channel-btn" href="https://t.me/tutor_Natalya" target="_blank"> ✨Мой канал</a>
+            <a class="channel-btn" href="https://t.me/tutor_Natalya" target="_blank">✨ Мой канал</a>
           </div>
         `;
         return;
@@ -317,12 +340,10 @@
         feedbackEl.textContent = "Неверно.";
         feedbackEl.className = "feedback incorrect";
 
-        // ✅ Пояснение только при ошибке
         if (q.explanation) {
           feedbackEl.textContent += " " + q.explanation;
         }
 
-        // ✅ Картинка пояснения только при ошибке
         if (q.explanationImageData) {
           explanationImageEl.src = q.explanationImageData;
           explanationImageEl.style.display = "block";
@@ -348,9 +369,7 @@
         <div class="title">Тест завершён!</div>
         <div class="final">Твой результат: ${score} из ${questions.length}</div>
 
-        <!-- ✅ кнопка канала в конце -->
         <div class="footer" style="margin-top: 16px;">
-          
           <a class="channel-btn" href="https://t.me/tutor_Natalya" target="_blank">✨ Мой канал</a>
         </div>
       `;
