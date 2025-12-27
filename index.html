@@ -1,0 +1,237 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Конструктор тестов</title>
+  <link rel="stylesheet" href="index.css" />
+</head>
+<body>
+  <div class="app">
+    <header class="header">
+      <div class="title-row">
+        <div class="logo-circle">🎲</div>
+        <div>
+          <h1>Конструктор тестов</h1>
+        </div>
+      </div>
+    </header>
+
+    <main class="layout">
+      <!-- ЛЕВАЯ КОЛОНКА: Мои тесты -->
+      <aside class="card">
+        <div class="card-header">
+          <div class="card-title">Мои тесты <span class="badge">шаг 1</span></div>
+        </div>
+
+        <div id="testsList" class="tests-list"></div>
+
+        <div class="test-actions" style="margin-top: 10px;">
+          <button id="newTestBtn" class="primary" type="button">➕ Новый тест</button>
+
+          <input id="importJsonFile" type="file" accept=".json,application/json" style="display:none;" />
+          <button id="importJsonBtn" class="secondary" type="button">⬆️ Импорт JSON</button>
+
+          <button id="copyTestBtn" class="secondary" type="button">📄 Копировать тест</button>
+        </div>
+
+        <div class="divider" style="margin: 14px 0;"></div>
+
+        <div class="field">
+          <label for="testNameInput">Название теста</label>
+          <input id="testNameInput" type="text" placeholder="Например: Номера" />
+        </div>
+
+        <div class="toggle-row">
+          <div>
+            <div style="font-weight:600; font-size:13px;">Перемешать вопросы</div>
+            <div class="hint">Если включено — вопросы перемешаются перед стартом.</div>
+          </div>
+          <label class="switch">
+            <input id="shuffleToggle" type="checkbox" />
+            <span class="slider"></span>
+          </label>
+        </div>
+
+        <div class="field" style="margin-top: 12px;">
+          <label for="testInstructionsInput">Инструкция для ученика (перед началом)</label>
+          <textarea id="testInstructionsInput" rows="4" placeholder="Например: Решай по порядку. На открытый ответ — пиши слово целиком."></textarea>
+          <div class="hint">Этот текст будет показан на первом экране теста (рядом с кнопкой «Начать»).</div>
+        </div>
+
+        <div class="footer-actions" style="margin-top: 14px;">
+          <a class="channel-link" href="https://t.me/tutor_Natalya" target="_blank" rel="noopener">✨ Мой канал</a>
+        </div>
+      </aside>
+
+      <!-- ПРАВАЯ КОЛОНКА: редактор + список вопросов -->
+      <section class="row">
+        <!-- Форма вопроса -->
+        <section class="card">
+          <div class="card-header">
+            <div class="card-title">Вопрос <span class="badge">шаг 2</span></div>
+          </div>
+
+          <div class="field">
+            <label for="qType">Тип вопроса</label>
+            <select id="qType" class="select">
+              <option value="true_false">Верю / Не верю</option>
+              <option value="multiple_choice">Multiple choice</option>
+              <option value="open_answer">Открытый ответ</option>
+            </select>
+          </div>
+
+          <div class="field">
+            <label for="qCategory">Категория (необязательно)</label>
+            <input id="qCategory" type="text" placeholder="Например: Грамматика / Лексика" />
+          </div>
+
+          <div class="field">
+            <label for="qText">Текст вопроса</label>
+            <textarea id="qText" rows="4" placeholder="Например: «Слон — самое тяжёлое наземное животное»"></textarea>
+          </div>
+
+          <div class="field">
+            <label for="qExplanation">Пояснение (покажется только при ошибке)</label>
+            <textarea id="qExplanation" rows="3" placeholder="Коротко поясни, почему это так."></textarea>
+          </div>
+
+          <!-- КАРТИНКА К ВОПРОСУ -->
+          <div class="field">
+            <label>Картинка к вопросу (необязательно)</label>
+            <div class="image-picker">
+              <div class="image-picker-top" style="display:flex;">
+                <label class="file-btn" for="qImageFile">📎 Выбрать файл</label>
+                <input id="qImageFile" type="file" accept="image/*" style="display:none;" />
+                <div id="qImageFileName" class="file-name">Файл не выбран</div>
+              </div>
+
+              <div class="hint">Выбери файл с компьютера — картинка сохранится в браузере на этом устройстве. Если нужно, можно указать ссылку/путь вручную (например: <b>images/1/2.jpg</b>).</div>
+
+              <div style="margin-top:10px;">
+                <label for="qImageUrl">Путь в репозитории</label>
+                <input id="qImageUrl" type="text" placeholder="images/1/2.jpg" />
+              </div>
+
+              <img id="qImagePreview" class="preview" alt="Превью картинки" style="display:none;" />
+            </div>
+          </div>
+
+          <!-- КАРТИНКА К ПОЯСНЕНИЮ -->
+          <div class="field">
+            <label>Картинка к пояснению (необязательно)</label>
+            <div class="image-picker">
+              <div class="image-picker-top" style="display:flex;">
+                <label class="file-btn" for="qExpImageFile">📎 Выбрать файл</label>
+                <input id="qExpImageFile" type="file" accept="image/*" style="display:none;" />
+                <div id="qExpImageFileName" class="file-name">Файл не выбран</div>
+              </div>
+
+              <div class="hint">Выбери файл с компьютера — картинка сохранится в браузере на этом устройстве. Если нужно, можно указать ссылку/путь вручную (например: <b>images/1/2_expl.png</b>).</div>
+
+              <div style="margin-top:10px;">
+                <label for="qExplanationImageUrl">Путь в репозитории</label>
+                <input id="qExplanationImageUrl" type="text" placeholder="images/1/2.jpg" />
+              </div>
+
+              <img id="qExpImagePreview" class="preview" alt="Превью картинки к пояснению" style="display:none;" />
+            </div>
+          </div>
+
+          <!-- TRUE/FALSE -->
+          <div id="tfBlock" style="display:none;">
+            <div class="hint" style="margin-bottom:8px;">Выбери правильный ответ:</div>
+            <div class="q-actions">
+              <button id="btnSetTrue" class="primary" type="button">✅ Верю (правда)</button>
+              <button id="btnSetFalse" class="secondary" type="button">❌ Не верю (ложь)</button>
+            </div>
+          </div>
+
+          <!-- MULTIPLE CHOICE -->
+          <div id="mcBlock" style="display:none;">
+            <div class="hint" style="margin-bottom:8px;">Добавь варианты и отметь правильный.</div>
+            <div id="mcList"></div>
+            <div class="q-actions">
+              <button id="mcAddOptionBtn" class="ghost" type="button">➕ Добавить вариант</button>
+            </div>
+          </div>
+
+          <!-- OPEN ANSWER -->
+          <div id="openBlock" style="display:none;">
+            <div class="field">
+              <label for="openCorrectText">Правильный ответ</label>
+              <input id="openCorrectText" type="text" placeholder="Например: dog" />
+            </div>
+            <div class="field">
+              <label for="openCheckMode">Проверка</label>
+              <select id="openCheckMode" class="select">
+                <option value="exact">Точное совпадение</option>
+                <option value="contains">Содержит</option>
+                <option value="starts_with">Начинается с</option>
+              </select>
+            </div>
+          </div>
+
+          <div class="q-actions" style="margin-top: 12px;">
+            <button id="addQuestionBtn" class="primary" type="button">➕ Добавить</button>
+            <button id="clearFormBtn" class="ghost" type="button">🔄 Очистить поля</button>
+          </div>
+        </section>
+
+        <!-- Список вопросов + экспорт -->
+        <section class="card">
+          <div class="card-header">
+            <div class="card-title">Набор вопросов <span class="badge">шаг 3</span></div>
+            <div class="counter-pill">Всего: <span id="questionsCount">0</span></div>
+          </div>
+
+          <div id="questionsList" class="questions-list"></div>
+
+          <div class="q-actions" style="margin-top: 12px; flex-wrap: wrap;">
+            <button id="openTestBtn" class="primary" type="button">🧪 Открыть тест</button>
+            <button id="exportBtn" class="secondary" type="button">⬇️ Экспорт JSON</button>
+            <button id="clearQuestionsBtn" class="danger" type="button">🗑 Очистить всё</button>
+          </div>
+
+          <div id="exportArea" class="export-area" style="display:none; margin-top: 12px;">
+            <label style="font-size:12px; color:#6b7280; display:block; margin-bottom:6px;">JSON готов — можно скопировать или скачать:</label>
+            <textarea id="exportTextarea" class="export-textarea" readonly></textarea>
+
+            <div class="q-actions" style="margin-top: 10px; justify-content: flex-end;">
+              <button id="copyJsonBtn" class="secondary" type="button">📋 Копировать</button>
+              <button id="downloadJsonBtn" class="secondary" type="button">💾 Скачать</button>
+              <button id="hideExportBtn" class="ghost" type="button">🙈 Скрыть</button>
+            </div>
+          </div>
+
+          <div style="display:none;">
+            <span id="questionsCount2">0</span>
+          </div>
+        </section>
+      </section>
+    </main>
+  </div>
+
+  <!-- Модалка редактирования -->
+  <div id="modalBackdrop" class="modal-backdrop" style="display:none;">
+    <div id="editModal" class="modal" role="dialog" aria-modal="true">
+      <div class="modal-header">
+        <div>
+          <div id="modalTitle" class="modal-title">Редактирование</div>
+          <div class="modal-subtitle">Измени поля и нажми «Сохранить».</div>
+        </div>
+        <button id="modalCloseBtn" class="ghost mini-btn" type="button" aria-label="Закрыть">✕</button>
+      </div>
+
+      <div id="modalContent" class="modal-content"></div>
+
+      <div class="modal-actions">
+        <button id="modalCancelBtn" class="ghost" type="button">Отмена</button>
+        <button id="modalSaveBtn" class="primary" type="button">Сохранить</button>
+      </div>
+    </div>
+  </div>
+
+  <script src="index.js" defer></script>
+</body>
+</html>

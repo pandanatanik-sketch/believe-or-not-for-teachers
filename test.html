@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Believe or Not — Тест</title>
+  <link rel="stylesheet" href="test.css" />
+</head>
+<body>
+  <div class="wrap">
+    <div class="card" id="card">
+      <!-- START -->
+      <section id="startScreen">
+        <div class="start-title" id="testTitleStart">Тест</div>
+        <div class="start-subtitle" id="startSubtitle"></div>
+        <div id="startInstructions" class="start-instructions" style="display:none;"></div>
+
+        <div class="btn-row" style="margin-top: 16px;">
+          <button id="startBtn" class="start-btn" type="button">▶️ Начать тест</button>
+          <a class="channel-btn" href="https://t.me/tutor_Natalya" target="_blank" rel="noopener">✨ Мой канал</a>
+        </div>
+
+        <div id="noQuestions" class="muted" style="display:none; margin-top: 10px;"></div>
+      </section>
+
+      <!-- TEST -->
+      <section id="testScreen" style="display:none;">
+        <div class="top-row">
+          <div class="top-title" id="testTitleTop"></div>
+          <div class="progress" id="progress"></div>
+        </div>
+
+        <div class="category" id="category" style="display:none;"></div>
+
+        <div class="question" id="question"></div>
+        <img id="questionImage" class="question-image" alt="Картинка к вопросу" style="display:none;" />
+
+        <div id="answersArea" class="answers-area"></div>
+
+        <div id="feedback" class="feedback" style="display:none;"></div>
+
+        <div id="explanationBox" class="explain-box" style="display:none;">
+          <div id="explanationText" class="explain-text"></div>
+          <img id="explanationImage" class="explain-image" alt="Картинка к пояснению" style="display:none;" />
+        </div>
+
+        <div class="btn-row" style="margin-top: 12px;">
+          <button id="btnNext" class="next-btn" type="button" style="display:none;">➡️ Следующий</button>
+        </div>
+      </section>
+
+      <!-- RESULT -->
+      <section id="resultScreen" style="display:none;">
+        <div class="result-title" id="testTitleResult"></div>
+
+        <div class="result-grid">
+          <div class="result-left">
+            <canvas id="scoreCanvas" width="220" height="220" style="display:block; margin: 0 auto;"></canvas>
+            <div class="score-text" id="percentText"></div>
+            <div class="score-big" id="scoreBig"></div>
+            <div class="muted" id="resultMeta"></div>
+          </div>
+
+          <div class="result-right">
+            <div class="errors-title">Ошибки</div>
+            <div id="errorsList" class="errors-list"></div>
+          </div>
+        </div>
+
+        <div class="btn-row" style="margin-top: 16px; flex-wrap: wrap;">
+          <button id="restartBtn" class="secondary" type="button">🔁 Пройти ещё раз</button>
+          <button id="retryWrongBtn" class="secondary" type="button">🎯 Пройти только ошибки</button>
+          <button id="downloadPngBtn" class="primary" type="button">🖼 Скачать PNG</button>
+          <a class="channel-btn" href="https://t.me/tutor_Natalya" target="_blank" rel="noopener">✨ Мой канал</a>
+        </div>
+      </section>
+    </div>
+  </div>
+
+  <!-- скрытый контейнер для сборки PNG -->
+  <div id="pngRender" class="png-render" style="position:fixed; left:-99999px; top:-99999px; opacity:0; pointer-events:none;"></div>
+  <script src="https://cdn.jsdelivr.net/npm/html2canvas@1.4.1/dist/html2canvas.min.js"></script>
+  <script src="test.js" defer></script>
+</body>
+</html>
